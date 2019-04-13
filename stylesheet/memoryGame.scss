@@ -1,0 +1,17 @@
+.background{
+    width: 600px;
+    height:600px;
+    background-image: url("../images/背景圖.jpg");
+    border: 10px solid #613030;
+    border-radius: 10px;
+    margin-top: 25px;
+    padding: 0px;
+}
+.body_background{
+    background-color:#3c3c3c;
+}
+#startgame_button{
+    border-color: black;
+    top:10px;
+    left:47%;
+}

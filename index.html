@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheet\memoryGame.css">
+    <title>Hello, world!</title>
+</head>
+
+<body class="body_background">
+    <div id="frame" class="container background">
+    </div>
+    <button id="startgame_button" type="button" class="btn btn-success position-absolute font-weight-bold"
+        onclick="StartGame()">開始遊戲</button>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+        integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        addimg();
+        creat_block();
+        function StartGame() {
+            randomCard();
+            appendevent();
+        }
+        function addimg() {
+            /* 加入圖片到陣列中(位置url) */
+            cardImg_Array = new Array();
+            for (var i = 1; i < 53; i++) {
+                cardImg_Array.push("images/" + i + ".png");
+            }
+        }
+        function creat_block() {
+            /* 產生html */
+            var formrow = document.createElement("div");
+            formrow.className = "row m-0";
+            var cardBack = "images/0.png";
+            var frame_width = document.getElementById("frame").offsetWidth - 20;
+            var frame_height = document.getElementById("frame").offsetHeight - 20;
+            for (var i = 0; i < 12; i++) {
+                $("<div></div>")
+                    .addClass("d-flex justify-content-center")
+                    .css("width", frame_width / 4 + "px")
+                    .css("height", frame_height / 3 + "px")
+                    .append($('<img class="cardImg" id=' + i + ' src=' + cardBack + ' alt="this is a card" style="width:75%;heigt75%;margin:15% 0;">'))
+                    .appendTo(formrow);
+            }
+            document.getElementById("frame").appendChild(formrow);
+        }
+        function randomCard() {
+            /* 打亂並加入卡牌 */
+            var array = new Array();
+            var i = 0;
+            while (i < 6) {
+                var randomNumber1 = Math.floor(Math.random() * cardImg_Array.length);
+                if (array.includes(cardImg_Array[randomNumber1]) == false) {
+                    for (var j = 0; j < 2; j++) {
+                        array.push(cardImg_Array[randomNumber1]);
+                    }
+                    i++;
+                }
+            }
+            /* 將array位置打亂 */
+            random_Array = new Array();
+            var number_Array = new Array();
+            while (random_Array.length != array.length) {
+                var randomNumber2 = Math.floor(Math.random() * array.length);
+                if (number_Array.includes(randomNumber2) == false) {
+                    number_Array.push(randomNumber2);
+                    random_Array.push(array[randomNumber2]);
+                }
+            }
+
+        }
+        function appendevent() {
+            /* 為每張圖附加上事件 */
+            var cardimg = document.getElementsByClassName("cardImg");
+            for (var i of cardimg) {
+                i.addEventListener("click", turncard)
+            }
+        }
+        function turncard() {
+            this.src = random_Array[this.id];
+            this.classList.add("faced");
+            if (document.getElementsByClassName("faced").length == 2) {
+                dicied();
+            }
+            winornot();
+            setTimeout(tunrn_back, 2000);
+        }
+        function tunrn_back() {
+            /* 將轉到有花色的那一面的撲克牌，轉到背面 */
+            var faced = document.getElementsByClassName("faced");
+            for (var i of faced) {
+                i.src = "images/0.png";
+                i.classList.remove("faced");
+            }
+        }
+        function dicied() {
+            /* 如果兩張事一樣就讓它消失 */
+            var faced = document.getElementsByClassName("faced");
+            if (faced[0].src == faced[1].src) {
+                setTimeout(function () {
+                    faced[0].classList.add("win");
+                    faced[1].classList.add("win");
+                    faced[0].style.visibility = "hidden";
+                    faced[1].style.visibility = "hidden";
+                    tunrn_back();
+                }, 1000)
+            }
+        }
+        function winornot() {
+            /* 判斷是否贏了 */
+            setTimeout(function () {
+                var win_number =document.getElementsByClassName("win");
+                if(win_number.length==random_Array.length){
+                    alert("你贏了在來一局如何，如果要的話，請按重新整理。");
+                }
+            },1100)
+        } 
+    </script>
+</body>
+
+</html>
